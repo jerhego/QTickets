@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <group android:id="@+id/menu_grupo_google" >
+        <item
+            android:id="@+id/menu_opc_cerrar_sesion"
+            android:title="@string/menu_opcion_cerrar_sesion">
+        </item>
+        <item
+            android:id="@+id/menu_opc_revocar_permisos"
+            android:title="@string/menu_opcion_revocar_permisos">
+        </item>
+    </group>
+
+    <item
+        android:id="@+id/menu_opc_acerca_de"
+        android:title="@string/menu_opcion_acerca_de">
+    </item>
+
+</menu>

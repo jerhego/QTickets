@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">QTickets</string>
+    <string name="btn_nueva_compra">Nueva Compra</string>
+    <string name="btn_buscar_producto">Buscar Producto</string>
+    <string name="plus_generic_error">Sign in with Google is not available.</string>
+    <string name="persona_desconocida_status">Persona desconocida</string>
+    <string name="menu_opcion_cerrar_sesion">Cerrar sesión</string>
+    <string name="menu_opcion_revocar_permisos">Revocar permisos Google+</string>
+    <string name="menu_opcion_acerca_de">Acerca de Pocket Shopper</string>
+    <string name="escaneo_fallido">No se ha encontrado ningún QRCode</string>
+    <string name="error_acceso_revocado_status">No es posible revocar el acceso</string>
+    <string name="error_conexion_rest">No ha sido posible la comunicación con el servidor</string>
+    <string name="btn_leer_qr">Leer QRCode</string>
+    <string name="btn_no_leer_qr">Introducir manualmente</string>
+
+</resources>
