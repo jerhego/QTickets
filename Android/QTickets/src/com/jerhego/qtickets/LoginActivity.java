@@ -8,6 +8,7 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -205,13 +206,13 @@ public class LoginActivity extends Activity implements OnClickListener,
 
 	// Metodo para llamar al WS que consulta si el usuario esta registrado
 
-	private class IsRegisteredWS extends AsyncTask<String, Void, Boolean> {
+	private class IsRegisteredWS extends AsyncTask<String, Void, String> {
 
 		private String token;
 
-		protected Boolean doInBackground(String... params) {
+		protected String doInBackground(String... params) {
 
-			Boolean resul = true;
+			String resul;
 			token = params[1];
 
 			HttpClient httpClient = new DefaultHttpClient();
@@ -224,12 +225,8 @@ public class LoginActivity extends Activity implements OnClickListener,
 			try {
 				HttpResponse resp = httpClient.execute(get);
 				String respStr = EntityUtils.toString(resp.getEntity());
-
-				if (respStr.equals(""))
-					resul = false;
-				else {
-					resul = true;
-				}
+				resul = respStr;
+				
 
 			} catch (Exception ex) {
 				Log.e("ServicioRest", "Error!", ex);
@@ -240,9 +237,9 @@ public class LoginActivity extends Activity implements OnClickListener,
 
 		}
 
-		protected void onPostExecute(Boolean resul) {
+		protected void onPostExecute(String resul) {
 			if (resul != null) {
-				if (resul) {
+				if (resul.equals("0")) {
 					// Esta registrado, mandamos token e id (PUT)
 					new IniciarAutenticacionWS().execute(mPlusClient
 							.getCurrentPerson().getId(), token);
@@ -266,14 +263,14 @@ public class LoginActivity extends Activity implements OnClickListener,
 	// Metodo para llamar al WS que inicia el proceso de autenticacion
 
 	private class IniciarAutenticacionWS extends
-			AsyncTask<String, Integer, Boolean> {
+			AsyncTask<String, Integer, String> {
 
 		private String idGoogle;
 		private String token;
 
-		protected Boolean doInBackground(String... params) {
+		protected String doInBackground(String... params) {
 
-			Boolean resul = true;
+			String resul;
 
 			idGoogle = params[0];
 			token = params[1];
@@ -303,8 +300,7 @@ public class LoginActivity extends Activity implements OnClickListener,
 				HttpResponse resp = httpClient.execute(put);
 				String respStr = EntityUtils.toString(resp.getEntity());
 
-				if (!respStr.equals("true"))
-					resul = false;
+				resul = respStr;
 
 			} catch (Exception ex) {
 				Log.e("ServicioRest", "Error!", ex);
@@ -314,16 +310,16 @@ public class LoginActivity extends Activity implements OnClickListener,
 			return resul;
 		}
 
-		protected void onPostExecute(Boolean resul) {
+		protected void onPostExecute(String resul) {
 
 			if (resul != null) {
-				if (resul) {
+				if (resul.equals("0")) {
 					// Guardar y pasar de activity
 					saveUserData(token);
 					irAMenuPrincipal(token);
 				} else {
 					Toast.makeText(getApplicationContext(),
-							"Fallo en la autenticación", Toast.LENGTH_SHORT)
+							"Fallo en la autenticación ("+resul+")", Toast.LENGTH_SHORT)
 							.show();
 					reiniciarInicioSesion();
 				}
@@ -339,16 +335,16 @@ public class LoginActivity extends Activity implements OnClickListener,
 
 	// Metodo para llamar al WS de registro de usuario
 
-	private class RegistrarWS extends AsyncTask<String, Integer, Boolean> {
+	private class RegistrarWS extends AsyncTask<String, Integer, String> {
 
 		private String email;
 		private String name;
 		private String idGoogle;
 		private String token;
 
-		protected Boolean doInBackground(String... params) {
+		protected String doInBackground(String... params) {
 
-			Boolean resul = true;
+			String resul;
 			email = params[0];
 			name = params[1];
 			idGoogle = params[2];
@@ -369,16 +365,27 @@ public class LoginActivity extends Activity implements OnClickListener,
 				user.setToken(token);
 
 				String jsonUser = new GsonBuilder().create().toJson(user);
-
+				
 				ByteArrayEntity entity = new ByteArrayEntity(
 						jsonUser.getBytes());
 				post.setEntity(entity);
+				
+				
+				/*JSONObject dato = new JSONObject();
+				 
+				dato.put("Name", name);
+				dato.put("Email", email);
+				dato.put("IdGoogle", idGoogle);
+				dato.put("Token", token);					
+
+				ByteArrayEntity entity = new ByteArrayEntity(
+						dato.toString().getBytes());
+				post.setEntity(entity);*/
 
 				HttpResponse resp = httpClient.execute(post);
 				String respStr = EntityUtils.toString(resp.getEntity());
-
-				if (!respStr.equals("true"))
-					resul = false;
+				resul = respStr;
+				
 			} catch (Exception ex) {
 				Log.e("ServicioRest", "Error!", ex);
 				resul = null;
@@ -387,16 +394,16 @@ public class LoginActivity extends Activity implements OnClickListener,
 			return resul;
 		}
 
-		protected void onPostExecute(Boolean resul) {
+		protected void onPostExecute(String resul) {
 
 			if (resul != null) {
-				if (resul) {
+				if (resul.equals("0")) {
 					// Guardar y pasar de activity
 					saveUserData(token);
 					irAMenuPrincipal(token);
 				} else {
 					Toast.makeText(getApplicationContext(),
-							"Fallo en el registro", Toast.LENGTH_SHORT).show();
+							"Fallo en el registro ("+resul+")", Toast.LENGTH_SHORT).show();
 					reiniciarInicioSesion();
 				}
 			} else {

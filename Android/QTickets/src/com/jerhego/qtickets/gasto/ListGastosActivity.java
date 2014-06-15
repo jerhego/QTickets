@@ -45,6 +45,8 @@ public class ListGastosActivity extends Activity implements OnClickListener {
 
 		sp = getSharedPreferences("user_data", Activity.MODE_PRIVATE);
 		credentials = sp.getString("credentials", "");
+		
+		mListGastos = (ListView) findViewById(R.id.listGastos);
 
 		mButtonBuscarPorQR = (Button) findViewById(R.id.btnBuscarPorQR);
 		mButtonBuscarPorQR.setOnClickListener(this);
